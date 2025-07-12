@@ -11,25 +11,60 @@ const PhotoGallery = () => {
       const res = await axios.get("https://photo-gallery-i9xr.onrender.com/api/photos", {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log("📷 Photos from server:", res.data);
       setPhotos(res.data);
     };
 
     fetchPhotos();
   }, []);
+  const handleDelete = async (photoId) => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this photo?");
+  if (!confirmDelete) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    await axios.delete(`https://photo-gallery-i9xr.onrender.com/api/photos/${photoId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    setPhotos(photos.filter((p) => p._id !== photoId));
+  } catch (err) {
+    alert("Failed to delete photo");
+    console.error(err);
+  }
+};
+
 
   return (
     <div>
       <h2>Photo Gallery</h2>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
         {photos.map((photo) => (
-          <img
-            key={photo._id}
-            src={photo.url}
-            alt="Uploaded"
-            style={{ width: "200px", height: "auto", cursor: "pointer" }}
-            onClick={() => setSelectedPhoto(photo.url)}
-          />
-        ))}
+  <div key={photo._id} style={{ position: "relative" }}>
+    <img
+      src={photo.url}
+      alt="Uploaded"
+      style={{ width: "200px", height: "auto", cursor: "pointer" }}
+      onClick={() => setSelectedPhoto(photo.url)}
+    />
+    <button
+      onClick={() => handleDelete(photo._id)}
+      style={{
+        position: "absolute",
+        top: "5px",
+        right: "5px",
+        background: "red",
+        color: "white",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer",
+      }}
+    >
+      ✕
+    </button>
+  </div>
+))}
+
       </div>
 
       {selectedPhoto && (
