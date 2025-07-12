@@ -12,7 +12,10 @@ connectDB();
 
 const app = express(); // ← MAKE SURE THIS COMES BEFORE app.use()
 
-app.use(cors());
+app.use(cors({
+  origin: "https://photo-gallery-frontend-uttn.onrender.com",
+  credentials: true,
+}));
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
