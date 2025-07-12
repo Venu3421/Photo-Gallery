@@ -14,6 +14,8 @@ const app = express(); // ← MAKE SURE THIS COMES BEFORE app.use()
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
+
 
 // Routes
 app.use("/api/users", userRoutes);
